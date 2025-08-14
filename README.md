@@ -1,4 +1,4 @@
-# 🐢 Turtle Graphics – MIT 6.005 Assignment
+# 🐢 Turtle Graphics – MIT 6.102 Assignment
 
 This project is an implementation of **turtle graphics** in Java, inspired by the MIT 6.005 course.  
 It includes functions for drawing shapes, calculating geometric properties, computing heading adjustments, and creating custom generative art.
