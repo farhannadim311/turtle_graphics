@@ -15,7 +15,10 @@ public class TurtleSoup {
      * @param sideLength length of each side
      */
     public static void drawSquare(Turtle turtle, int sideLength) {
-        throw new RuntimeException("implement me!");
+    	for (int i = 0; i < 4;  i ++) {
+    		turtle.forward(sideLength);
+    		turtle.turn(90);
+    	}
     }
 
     /**
@@ -28,7 +31,7 @@ public class TurtleSoup {
      * @return angle in degrees, where 0 <= angle < 360
      */
     public static double calculateRegularPolygonAngle(int sides) {
-        throw new RuntimeException("implement me!");
+        return (((sides - 2) * 180) / (float)(sides));
     }
 
     /**
@@ -42,7 +45,8 @@ public class TurtleSoup {
      * @return the integer number of sides
      */
     public static int calculatePolygonSidesFromAngle(double angle) {
-        throw new RuntimeException("implement me!");
+        double sides = 360 / (180 - angle);
+        return Math.round((float)sides);
     }
 
     /**
@@ -55,7 +59,13 @@ public class TurtleSoup {
      * @param sideLength length of each side
      */
     public static void drawRegularPolygon(Turtle turtle, int sides, int sideLength) {
-        throw new RuntimeException("implement me!");
+        double angles = calculateRegularPolygonAngle(sides);
+        for (int i = 0; i < sides; i ++) {
+        	turtle.forward(sideLength);
+        	turtle.turn(angles);
+        }
+        
+        
     }
 
     /**
@@ -79,7 +89,21 @@ public class TurtleSoup {
      */
     public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY,
                                                  int targetX, int targetY) {
-        throw new RuntimeException("implement me!");
+    	
+    	double dx = targetX - currentX;
+        double dy = targetY - currentY;
+
+        // Already at the target: no turn needed
+        if (dx == 0 && dy == 0) return 0.0;
+
+        double bearing = Math.toDegrees(Math.atan2(dx, dy));
+        if (bearing < 0) bearing += 360.0;  // normalize to [0, 360)
+
+        // Right-turn amount from currentHeading to bearing, normalized to [0, 360)
+        double turn = (bearing - currentHeading) % 360.0;
+        if (turn < 0) turn += 360.0;
+
+        return turn;
     }
 
     /**
@@ -97,7 +121,19 @@ public class TurtleSoup {
      *         otherwise of size (# of points) - 1
      */
     public static List<Double> calculateHeadings(List<Integer> xCoords, List<Integer> yCoords) {
-        throw new RuntimeException("implement me!");
+        int index = 0;
+        List <Double> result = new ArrayList();
+        result.add(0.0);
+        while(index != xCoords.size() -1) {
+        	int curr_x = xCoords.get(index);
+        	int next_x = xCoords.get(index + 1);
+        	int curr_y = yCoords.get(index);
+        	int next_y = yCoords.get(index + 1);
+        	result.add(calculateHeadingToPoint(result.get(index), curr_x, curr_y, next_x, next_y));
+        	index ++;
+        }
+        result.remove(0);
+        return result;
     }
 
     /**
@@ -109,7 +145,31 @@ public class TurtleSoup {
      * @param turtle the turtle context
      */
     public static void drawPersonalArt(Turtle turtle) {
-        throw new RuntimeException("implement me!");
+        int side = 70;            // starting side length
+        int squares = 36;         // how many rotated squares to draw
+        int rotate = 10;          // rotation between squares (degrees)
+
+        for (int i = 0; i < squares; i++) {
+            // cycle through colors
+            switch (i % 6) {
+                case 0: turtle.color(PenColor.RED);    break;
+                case 1: turtle.color(PenColor.ORANGE); break;
+                case 2: turtle.color(PenColor.YELLOW); break;
+                case 3: turtle.color(PenColor.GREEN);  break;
+                case 4: turtle.color(PenColor.BLUE);   break;
+                default: turtle.color(PenColor.MAGENTA);
+            }
+
+            // draw one square
+            for (int s = 0; s < 4; s++) {
+                turtle.forward(side);
+                turtle.turn(90);
+            }
+
+            // rotate a bit and gently vary size for a nicer pattern
+            turtle.turn(rotate);
+            side = 60 + (i % 12);  // small size wobble: 60..71
+        }
     }
 
     /**
@@ -122,7 +182,7 @@ public class TurtleSoup {
     public static void main(String args[]) {
         DrawableTurtle turtle = new DrawableTurtle();
 
-        drawSquare(turtle, 40);
+        drawPersonalArt(turtle);
 
         // draw the window
         turtle.draw();
